@@ -1,0 +1,10 @@
+[book]
+authors = ["Boris Cosic"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Prairie Documentation"
+[output.html]
+theme = "src/theme"
+additional-css = ["src/theme/gitbook.css"]
+no-section-label = true
