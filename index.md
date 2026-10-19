@@ -6,7 +6,8 @@ hero:
   text: "Field Service Management"
   tagline: "Comprehensive user guide and operational manuals for commercial landscaping, maintenance, and snow removal."
   image:
-    src: /logo.svg
+    light: /logo.svg
+    dark: /logo-dark.svg
     alt: PrairieHQ
   actions:
     - theme: brand

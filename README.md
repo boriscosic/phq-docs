@@ -41,6 +41,7 @@ docs/
 ├── resourcing/               # Employees, Clock In/Out, Time Off, Payroll
 ├── financials/               # Invoices, Daily Financials, P&L, Cash Flow
 ├── portal/                   # Customer Self-Service Portal & Online Payments
+├── developer/                # OAuth 2.0, PKCE Flow, Scopes, and API Integration Examples
 ├── index.md                  # Landing page hero and feature highlights
 └── package.json
 ```

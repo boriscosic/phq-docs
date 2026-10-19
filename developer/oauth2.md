@@ -1,6 +1,6 @@
-# OAuth 2.0 & OpenID Connect Flow
+# OAuth 2.0 & OpenID Connect Overview
 
-PrairieHQ provides a standards-compliant **OAuth 2.0 Authorization Server** and **OpenID Connect (OIDC)** provider in `services`. This allows web applications, mobile apps, and third-party partner integrations to securely authenticate users and call the PrairieHQ GraphQL API.
+PrairieHQ provides a standards-compliant **OAuth 2.0 Authorization Server** and **OpenID Connect (OIDC)** provider. This allows web applications, mobile apps, and third-party partner integrations to securely authenticate users and call the PrairieHQ GraphQL API.
 
 ---
 
@@ -9,7 +9,7 @@ PrairieHQ provides a standards-compliant **OAuth 2.0 Authorization Server** and 
 PrairieHQ enforces **OAuth 2.0 Authorization Code Flow with mandatory PKCE (RFC 7636)** using the `S256` code challenge method.
 
 - **Public Clients**: Single Page Applications (SPAs) and mobile apps that cannot protect a secret must authenticate using PKCE without a client secret.
-- **Confidential Clients**: Server-side applications that securely store credentials must authenticate using HTTP Basic or credentials with PKCE.
+- **Confidential Clients**: Server-side applications that securely store credentials must authenticate using HTTP Basic or POST credentials alongside PKCE.
 - **Grant Types Not Supported**: Implicit grant, Resource Owner Password Credentials, and Client Credentials grants are explicitly disallowed for external clients.
 
 ---
@@ -41,9 +41,7 @@ sequenceDiagram
 
 ## OAuth Endpoints
 
-All OAuth and OIDC endpoints below use the canonical issuer
-`https://auth.prairiehq.com`. Authorization requests must include the tenant
-database key as `tenant=<tenant>`.
+All OAuth and OIDC endpoints below use the canonical issuer `https://auth.prairiehq.com`. Authorization requests must include the tenant identifier as `tenant=<tenant>`.
 
 | Endpoint | Method | Purpose |
 | :--- | :--- | :--- |
@@ -60,9 +58,9 @@ database key as `tenant=<tenant>`.
 
 ## Multi-Tenancy & Data Isolation
 
-PrairieHQ routes OAuth requests within its multi-tenant PostgreSQL architecture:
-- **Tenant Prefixing**: Authorization codes and refresh tokens are opaque tokens prefixed with the tenant name (e.g. `bugaboo.<randomToken>`). This allows stateless routing to `phq_<tenant>` without querying the global `phq_app` database.
-- **Tenant Selection**: Authorization requests use the canonical auth host and must include `tenant=<tenant>` so PrairieHQ can select the tenant database.
+PrairieHQ routes OAuth requests within its multi-tenant architecture:
+- **Tenant Prefixing**: Authorization codes and refresh tokens are opaque tokens prefixed with the tenant key (e.g., `bugaboo.<randomToken>`). This allows stateless routing to the appropriate tenant database without querying global shared state.
+- **Tenant Selection**: Authorization requests use the canonical auth host and must include `tenant=<tenant>` so PrairieHQ can select the tenant context.
 - **Organization Scoping**: During consent, users pick an organization membership. The issued access token is tightly bound to that `organization_guid`.
 
 ---
@@ -88,7 +86,7 @@ PrairieHQ routes OAuth requests within its multi-tenant PostgreSQL architecture:
 
 ---
 
-## Scopes Reference
+## Scopes Overview
 
 ### Identity Scopes
 - `openid`: Enables OIDC and returns an `id_token`.
@@ -97,8 +95,8 @@ PrairieHQ routes OAuth requests within its multi-tenant PostgreSQL architecture:
 - `offline_access`: Issues a 30-day rotating refresh token.
 
 ### API Scopes
-API scopes map directly to root query and mutation fields in the PrairieHQ GraphQL schema:
-- `jobs`: Access to job lists, assignments, completion reports.
+API scopes map directly to root query and mutation fields in the PrairieHQ GraphQL API:
+- `jobs`: Access to job lists, assignments, and completion reports.
 - `workOrders`: Access to work orders and contracts.
 - `customers`: Access to customer records, properties, and billing profiles.
 - `invoices`: Access to invoice creation and payment records.
@@ -106,10 +104,10 @@ API scopes map directly to root query and mutation fields in the PrairieHQ Graph
 
 ---
 
-## Further Developer Resources
+## Further Developer Guides
 
-For complete implementation code examples and backend configuration, refer to:
-- [`services/oauth2/README.md`](file:///home/boris/code/prairiehq/services/oauth2/README.md)
-- [`services/oauth2/AUTHORIZATION_CODE_FLOW.md`](file:///home/boris/code/prairiehq/services/oauth2/AUTHORIZATION_CODE_FLOW.md)
-- [`services/oauth2/TOKENS_AND_SCOPES.md`](file:///home/boris/code/prairiehq/services/oauth2/TOKENS_AND_SCOPES.md)
-- [`services/oauth2/CLIENT_EXAMPLES.md`](file:///home/boris/code/prairiehq/services/oauth2/CLIENT_EXAMPLES.md)
+Explore the detailed reference guides below for step-by-step protocol implementation, token structures, and code examples:
+
+- [Authorization Code Flow & PKCE](/developer/authorization-code-flow): Step-by-step protocol walkthrough, PKCE generation, request parameters, and callback handling.
+- [Tokens, Scopes & Claims](/developer/tokens-and-scopes): Detailed JWT payload examples, refresh token family rotation rules, and third-party marketplace app installations.
+- [Client Integration Examples](/developer/client-examples): Ready-to-use TypeScript, Browser Web Crypto, Node.js, and cURL examples.

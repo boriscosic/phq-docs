@@ -85,7 +85,10 @@ export default defineConfig({
         text: 'Developer & API',
         collapsed: false,
         items: [
-          { text: 'OAuth 2.0 & OIDC Flow', link: '/developer/oauth2' },
+          { text: 'OAuth 2.0 Overview', link: '/developer/oauth2' },
+          { text: 'Authorization Code Flow & PKCE', link: '/developer/authorization-code-flow' },
+          { text: 'Tokens, Scopes & Claims', link: '/developer/tokens-and-scopes' },
+          { text: 'Client Integration Examples', link: '/developer/client-examples' },
         ],
       },
     ],
