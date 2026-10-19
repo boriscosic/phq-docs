@@ -41,11 +41,21 @@ jobs:
       - name: Build documentation
         run: pnpm build
 
+      - name: Validate deployment credentials
+        env:
+          EC2_HOST: ${{ vars.EC2_HOST }}
+          EC2_USER: ${{ vars.EC2_USER }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          test -n "$EC2_HOST" || { echo "::error::Missing EC2_HOST Actions variable."; exit 1; }
+          test -n "$EC2_USER" || { echo "::error::Missing EC2_USER Actions variable."; exit 1; }
+          test -n "$SSH_PRIVATE_KEY" || { echo "::error::Missing SSH_PRIVATE_KEY repository secret."; exit 1; }
+
       - name: Upload site over SFTP
         uses: wlixcc/SFTP-Deploy-Action@v1.2.6
         with:
-          server: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
+          server: ${{ vars.EC2_HOST }}
+          username: ${{ vars.EC2_USER }}
           ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           local_path: ./.vitepress/dist/*
